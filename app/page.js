@@ -7,6 +7,7 @@ import { ShoppingCart, Search, User, ShoppingBag } from "lucide-react"
 import ProductCard from "@/components/product-card"
 import CategoryFilter from "@/components/category-filter"
 import { useProducts } from "@/contexts/product-context"
+import AppHeader from "@/components/AppHeader" // Import AppHeader
 
 export default function Home() {
   const { products, loading: isLoading } = useProducts()
@@ -18,27 +19,22 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState("")
 
   useEffect(() => {
-    // Check if user is authenticated
     const token = localStorage.getItem("auth-token")
     const userRole = localStorage.getItem("user-role")
 
     if (!token) {
-      // If no token, redirect to login
       router.push("/login")
       return
     }
 
     if (userRole === "admin") {
-      // If admin is logged in, redirect to admin dashboard
       router.push("/admin/dashboard")
       return
     }
 
-    // Extract unique categories
     const uniqueCategories = [...new Set(products.map((product) => product.category))]
     setCategories(uniqueCategories)
 
-    // Get cart count and total from localStorage
     const updateCartInfo = () => {
       const cart = JSON.parse(localStorage.getItem("cart") || "[]")
       setCartCount(cart.length)
@@ -48,7 +44,6 @@ export default function Home() {
 
     updateCartInfo()
 
-    // Set up event listener for cart updates
     window.addEventListener("storage", updateCartInfo)
 
     return () => {
@@ -62,118 +57,85 @@ export default function Home() {
   }
 
   const filteredProducts = products.filter(
-    (product) =>
-      (selectedCategory === "all" || product.category === selectedCategory) &&
-      (product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.description.toLowerCase().includes(searchTerm.toLowerCase())),
+      (product) =>
+          (selectedCategory === "all" || product.category === selectedCategory) &&
+          (product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              product.description.toLowerCase().includes(searchTerm.toLowerCase())),
   )
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="sticky top-0 z-10 bg-primary text-white p-4 shadow-md">
-        <div className="container mx-auto flex justify-between items-center">
-          <div className="flex items-center">
-            <Image
-              src="/placeholder.svg?height=40&width=40"
-              alt="TuckMate Logo"
-              width={40}
-              height={40}
-              className="mr-2"
-            />
-            <h1 className="text-xl font-bold">TuckMate</h1>
+      <div className="flex flex-col min-h-screen bg-gray-50">
+        <AppHeader /> {/* Include the AppHeader component */}
+
+        {/* Search Bar */}
+        <div className="sticky top-16 z-10 bg-white p-4 shadow-sm">
+          <div className="container mx-auto">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <input
+                  type="text"
+                  placeholder="Search products..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-black"
+              />
+            </div>
           </div>
-          <div className="flex items-center gap-4">
-            <button onClick={() => router.push("/cart")} className="relative">
-              <ShoppingCart className="h-6 w-6" />
-              {cartCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                  {cartCount}
-                </span>
-              )}
-            </button>
-            {cartCount > 0 && (
-              <div className="hidden md:block text-sm">
-                <span className="font-bold">${(cartTotal + 0.5).toFixed(2)}</span>
+        </div>
+
+        {/* Category Filter */}
+        <div className="container mx-auto px-4 py-3">
+          <CategoryFilter
+              categories={["all", ...categories]}
+              selectedCategory={selectedCategory}
+              onCategoryChange={handleCategoryChange}
+          />
+        </div>
+
+        {/* Main Content */}
+        <main className="flex-1 container mx-auto p-4">
+          {isLoading ? (
+              <div className="flex justify-center items-center h-64">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
               </div>
-            )}
-            <button onClick={() => router.push("/profile")}>
-              <User className="h-6 w-6" />
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {/* Search Bar */}
-      <div className="sticky top-16 z-10 bg-white p-4 shadow-sm">
-        <div className="container mx-auto">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search products..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-black"
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Category Filter */}
-      <div className="container mx-auto px-4 py-3">
-        <CategoryFilter
-          categories={["all", ...categories]}
-          selectedCategory={selectedCategory}
-          onCategoryChange={handleCategoryChange}
-        />
-      </div>
-
-      {/* Main Content */}
-      <main className="flex-1 container mx-auto p-4">
-        {isLoading ? (
-          <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {filteredProducts.length > 0 ? (
-              filteredProducts.map((product) => <ProductCard key={product.id} product={product} />)
-            ) : (
-              <div className="col-span-full text-center py-10">
-                <p className="text-gray-500">
-                  {searchTerm ? `No products found matching "${searchTerm}"` : "No products found in this category."}
-                </p>
+          ) : (
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {filteredProducts.length > 0 ? (
+                    filteredProducts.map((product) => <ProductCard key={product.id} product={product} />)
+                ) : (
+                    <div className="col-span-full text-center py-10">
+                      <p className="text-gray-500">
+                        {searchTerm ? `No products found matching "${searchTerm}"` : "No products found in this category."}
+                      </p>
+                    </div>
+                )}
               </div>
-            )}
-          </div>
-        )}
-      </main>
+          )}
+        </main>
 
-      {/* Bottom Navigation */}
-      <nav className="sticky bottom-0 bg-white border-t border-gray-200 p-2">
-        <div className="container mx-auto">
-          <div className="flex justify-around">
-            <button onClick={() => router.push("/")} className="flex flex-col items-center p-2 text-primary">
-              <Search className="h-6 w-6" />
-              <span className="text-xs mt-1">Browse</span>
-            </button>
-            <button onClick={() => router.push("/cart")} className="flex flex-col items-center p-2 text-gray-600">
-              <ShoppingCart className="h-6 w-6" />
-              <span className="text-xs mt-1">Cart</span>
-            </button>
-            <button onClick={() => router.push("/orders")} className="flex flex-col items-center p-2 text-gray-600">
-              <ShoppingBag className="h-6 w-6" />
-              <span className="text-xs mt-1">Orders</span>
-            </button>
-            <button onClick={() => router.push("/profile")} className="flex flex-col items-center p-2 text-gray-600">
-              <User className="h-6 w-6" />
-              <span className="text-xs mt-1">Profile</span>
-            </button>
+        {/* Bottom Navigation */}
+        <nav className="sticky bottom-0 bg-white border-t border-gray-200 p-2">
+          <div className="container mx-auto">
+            <div className="flex justify-around">
+              <button onClick={() => router.push("/")} className="flex flex-col items-center p-2 text-primary">
+                <Search className="h-6 w-6" />
+                <span className="text-xs mt-1">Browse</span>
+              </button>
+              <button onClick={() => router.push("/cart")} className="flex flex-col items-center p-2 text-gray-600">
+                <ShoppingCart className="h-6 w-6" />
+                <span className="text-xs mt-1">Cart</span>
+              </button>
+              <button onClick={() => router.push("/orders")} className="flex flex-col items-center p-2 text-gray-600">
+                <ShoppingBag className="h-6 w-6" />
+                <span className="text-xs mt-1">Orders</span>
+              </button>
+              <button onClick={() => router.push("/profile")} className="flex flex-col items-center p-2 text-gray-600">
+                <User className="h-6 w-6" />
+                <span className="text-xs mt-1">Profile</span>
+              </button>
+            </div>
           </div>
-        </div>
-      </nav>
-    </div>
+        </nav>
+      </div>
   )
 }
-
