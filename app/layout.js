@@ -1,7 +1,7 @@
 import { OrderProvider } from "@/contexts/order-context"
 import { ProductProvider } from "@/contexts/product-context"
-import { Inter } from "next/font/google"
 import { registerServiceWorker } from "@/lib/register-sw"
+import { Inter } from "next/font/google"
 import "./globals.css"
 
 const inter = Inter({ subsets: ["latin"] })
@@ -38,6 +38,8 @@ export default function RootLayout({ children }) {
         <meta name="apple-mobile-web-app-title" content="TuckMate" />
         <meta name="theme-color" content="#000000" />
         <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+
+        <link rel="manifest" href="/manifest.json"></link>
       </head>
       <body className={inter.className}>
         <ProductProvider>
