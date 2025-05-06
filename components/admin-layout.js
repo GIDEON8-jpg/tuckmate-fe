@@ -1,10 +1,10 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { useRouter, usePathname } from "next/navigation"
+import { LayoutDashboard, LogOut, Menu, Package, ShoppingBag, User, X } from "lucide-react"
 import Image from "next/image"
-import { LayoutDashboard, Package, ShoppingBag, BarChart, Users, Settings, LogOut, Menu, X, User } from "lucide-react"
 import Link from "next/link"
+import { usePathname, useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
 
 export default function AdminLayout({ children }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -45,13 +45,6 @@ export default function AdminLayout({ children }) {
       active: pathname === "/admin/dashboard",
     },
     {
-      name: "Barcode Scanner",
-      icon: <BarChart className="h-5 w-5" />,
-      href: "/admin/scanner",
-      active: pathname === "/admin/scanner",
-      highlight: true,
-    },
-    {
       name: "Products",
       icon: <Package className="h-5 w-5" />,
       href: "/admin/products",
@@ -62,18 +55,6 @@ export default function AdminLayout({ children }) {
       icon: <ShoppingBag className="h-5 w-5" />,
       href: "/admin/orders",
       active: pathname.startsWith("/admin/orders"),
-    },
-    {
-      name: "Customers",
-      icon: <Users className="h-5 w-5" />,
-      href: "/admin/customers",
-      active: pathname.startsWith("/admin/customers"),
-    },
-    {
-      name: "Settings",
-      icon: <Settings className="h-5 w-5" />,
-      href: "/admin/settings",
-      active: pathname === "/admin/settings",
     },
   ]
 
@@ -110,9 +91,8 @@ export default function AdminLayout({ children }) {
               <Link
                 key={item.name}
                 href={item.href}
-                className={`flex items-center px-4 py-3 text-sm font-medium rounded-md ${
-                  item.active ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white"
-                } ${item.highlight ? "border-l-4 border-green-500" : ""}`}
+                className={`flex items-center px-4 py-3 text-sm font-medium rounded-md ${item.active ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white"
+                  } ${item.highlight ? "border-l-4 border-green-500" : ""}`}
               >
                 <div className="mr-3">{item.icon}</div>
                 <span>{item.name}</span>
@@ -138,9 +118,8 @@ export default function AdminLayout({ children }) {
         )}
 
         <div
-          className={`fixed inset-y-0 left-0 z-50 w-64 bg-gray-800 transform ${
-            isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
-          } transition-transform duration-300 ease-in-out`}
+          className={`fixed inset-y-0 left-0 z-50 w-64 bg-gray-800 transform ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+            } transition-transform duration-300 ease-in-out`}
         >
           <div className="p-4 flex items-center justify-between">
             <div className="flex items-center">
@@ -176,9 +155,8 @@ export default function AdminLayout({ children }) {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`flex items-center px-4 py-3 text-sm font-medium rounded-md ${
-                    item.active ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white"
-                  } ${item.highlight ? "border-l-4 border-green-500" : ""}`}
+                  className={`flex items-center px-4 py-3 text-sm font-medium rounded-md ${item.active ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white"
+                    } ${item.highlight ? "border-l-4 border-green-500" : ""}`}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   <div className="mr-3">{item.icon}</div>
