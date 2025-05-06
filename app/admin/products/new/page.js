@@ -42,7 +42,7 @@ export default function NewProduct() {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    await fetch("http://164.90.174.173:5555/api/products", {
+    await fetch("https://srv1.decie.dev/api/products", {
       method: "POST",
       headers: {
         'Content-Type': 'application/json',
