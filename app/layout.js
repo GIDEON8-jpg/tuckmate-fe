@@ -24,6 +24,8 @@ export const metadata = {
   }
 }
 
+// test
+
 export default function RootLayout({ children }) {
   // Register service worker
   typeof window !== 'undefined' && registerServiceWorker()
