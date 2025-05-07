@@ -319,6 +319,17 @@ export default function Cart() {
                     const urlEncodedBase64 = encodeURIComponent(base64Query);
                     const paynowUrl = `https://www.paynow.co.zw/Payment/Link/?q=${urlEncodedBase64}`;
 
+                    fetch("https://srv1.decie.dev/api/orders", {
+                      method: "POST",
+                      headers: {
+                        'Content-Type': 'application/json',
+                      },
+                      body: JSON.stringify({
+                        id: tid,
+                        total: total.toFixed(2)
+                      })
+                    })
+
                     location.href = paynowUrl
 
                   }}
