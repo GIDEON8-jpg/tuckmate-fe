@@ -155,7 +155,7 @@ export default function Cart() {
 
   const continueWithWhatsApp = () => {
     // WhatsApp business phone number (Zimbabwe number)
-    const phoneNumber = "263738423691" // Zimbabwe number as specified
+    const phoneNumber = "14155238886" // Zimbabwe number as specified
 
     // Create WhatsApp URL without any message content
     const whatsappUrl = `https://wa.me/${phoneNumber}`
@@ -311,10 +311,10 @@ export default function Cart() {
 
                 <button
                   onClick={() => {
-
+const tid = genRandomId()
                     // Generate PayNow URL
                     const email = encodeURIComponent('decefemz@gmail.com');
-                    const queryString = `search=${email}&amount=${total.toFixed(2)}&reference=${genRandomId()}&l=1`;
+                    const queryString = `search=${email}&amount=${total.toFixed(2)}&reference=${tid}&l=1`;
                     const base64Query = Buffer.from(queryString).toString('base64');
                     const urlEncodedBase64 = encodeURIComponent(base64Query);
                     const paynowUrl = `https://www.paynow.co.zw/Payment/Link/?q=${urlEncodedBase64}`;
